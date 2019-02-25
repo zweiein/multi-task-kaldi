@@ -57,8 +57,12 @@ int main(int argc, char *argv[]) {
     "Get a list of corresponding phones for a pdf-id in a decision tree\n"
     "Usage:  pdf-to-phone <pdf-id> <tree-in> <topo-in> <phone-table>\n"
     "e.g.: \n"
-    "  pdf-to-phone 231 tree topo phones.txt\n";
+    "  pdf-to-phone 231 exp/tri4/tree data/lang/topo data/lang/phones.txt\n";
   
+  if (po.NumArgs() != 4) {
+      po.PrintUsage();
+      exit(1);
+  }
   
   ParseOptions po(usage);
   po.Read(argc, argv);
