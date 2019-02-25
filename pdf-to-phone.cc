@@ -59,33 +59,34 @@ int main(int argc, char *argv[]) {
     "e.g.: \n"
     "  pdf-to-phone 231 exp/tri4/tree data/lang/topo data/lang/phones.txt\n";
   
+  ParseOptions po(usage);
+  po.Read(argc, argv);
+  
   if (po.NumArgs() != 4) {
       po.PrintUsage();
       exit(1);
   }
   
-  ParseOptions po(usage);
-  po.Read(argc, argv);
-  
   std::string
-    pdf_id = po.GetArg(1),     
-    tree_filename = po.GetArg(2),
-    topo_filename = po.GetArg(3),
-    phones_symtab_filename = po.GetArg(4);
+  pdf_id = po.GetArg(1),     
+  tree_filename = po.GetArg(2),
+  topo_filename = po.GetArg(3),
+  phones_symtab_filename = po.GetArg(4);
 
-  ContextDependency ctx_dep; ReadKaldiObject(tree_filename, &ctx_dep);
-  HmmTopology topo; ReadKaldiObject(topo_filename, &topo);
+  ContextDependency ctx_dep; 
+  ReadKaldiObject(tree_filename, &ctx_dep);
+  HmmTopology topo; 
+  
+  ReadKaldiObject(topo_filename, &topo);
   TransitionModel trans_model(ctx_dep, topo);
 
   fst::SymbolTable *phones_symtab = NULL;
   {  // read phone symbol table.
-    std::ifstream is(phones_symtab_filename.c_str());
+      std::ifstream is(phones_symtab_filename.c_str());
       phones_symtab = fst::SymbolTable::ReadText(is, phones_symtab_filename);
-      if (!phones_symtab) KALDI_ERR << "Could not read phones symbol-table file "<<phones_symtab_filename;
+      if (!phones_symtab) KALDI_ERR << "Could not read phones symbol-table file " << phones_symtab_filename;
   }
   
   std::vector<int32> pdf(1, stoi(pdf_id));
-    
   pdfToPhone(pdf, trans_model, *phones_symtab); 
-
 }
